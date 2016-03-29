@@ -3,6 +3,7 @@ package com.skyon.spider.sample;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
+import us.codecraft.webmagic.pipeline.JsonFilePipeline;
 import us.codecraft.webmagic.processor.PageProcessor;
 
 public class GithubRepoPageProcessor implements PageProcessor{
@@ -11,14 +12,14 @@ public class GithubRepoPageProcessor implements PageProcessor{
 
     public void process(Page page) {
         page.addTargetRequests(page.getHtml().links().regex("(https://github\\.com/\\w+/\\w+)").all());
-        page.putField("author", page.getUrl().regex("https://github\\.com/(\\w+)/.*").toString());
+        /*page.putField("author", page.getUrl().regex("https://github\\.com/(\\w+)/.*").toString());
         page.putField("name", page.getHtml().xpath("//h1[@class='entry-title public']/strong/a/text()").toString());
         if (page.getResultItems().get("name")==null){
             //skip this page
             page.setSkip(true);
-        }
-        page.putField("readme", page.getHtml().xpath("//div[@id='readme']/tidyText()"));
-        System.out.println(page);
+        }*/
+//        page.putField("readme", page.getHtml().xpath("//div[@id='readme']/tidyText()"));
+//        System.out.println(page.getTargetRequests());
     }
 
     public Site getSite() {
@@ -27,7 +28,10 @@ public class GithubRepoPageProcessor implements PageProcessor{
 
     public static void main(String[] args) {
     	//https://github.com/code4craft
-        Spider.create(new GithubRepoPageProcessor()).addUrl("https://github.com/code4craft").thread(1).run();
+        Spider.create(new GithubRepoPageProcessor())
+        .addUrl("https://github.com/code4craft")
+        .addPipeline(new JsonFilePipeline("d:/spider"))
+        .run();
     }
 
 }
